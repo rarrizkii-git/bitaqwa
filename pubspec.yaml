@@ -1,0 +1,38 @@
+name: bitaqwa
+description: "Bitaqwa — teman perjalanan ibadah harian: jadwal shalat, Al-Qur'an, doa, zikir, dan arah kiblat."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^3.4.3
+  go_router: ^17.5.0
+  flutter_animate: ^4.5.2
+  google_fonts: ^8.2.1
+  flutter_svg: ^2.3.2
+  shared_preferences: ^2.5.6
+  intl: ^0.20.2
+  http: ^1.6.0
+  visibility_detector: ^0.4.0+2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
