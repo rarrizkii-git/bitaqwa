@@ -1,3 +1,0 @@
-# SPA fallback for hosts that support Netlify-style redirects.
-# Required because Bitaqwa uses path-based URLs (/quran/36, /jadwal-shalat, ...).
-/*    /index.html   200

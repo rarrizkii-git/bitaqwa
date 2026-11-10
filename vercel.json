@@ -1,5 +1,11 @@
 
 {
   "buildCommand": "bash vercel-build.sh",
-  "outputDirectory": "build/web"
+  "outputDirectory": "build/web",
+  "rewrites": [
+    {
+      "source": "/((?!assets/|canvaskit/|icons/|screenshots/|.*\\.).*)",
+      "destination": "/index.html"
+    }
+  ]
 }
