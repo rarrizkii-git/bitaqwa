@@ -134,13 +134,15 @@ class SettingsPage extends ConsumerWidget {
       context,
       title: 'Hapus semua bookmark?',
       message:
-          'Bookmark surah, bookmark doa, dan penanda terakhir dibaca akan dihapus dari perangkat ini.',
+          'Bookmark surah, bookmark doa, kajian tersimpan, dan penanda terakhir '
+          'dibaca akan dihapus dari perangkat ini.',
       confirmLabel: 'Hapus bookmark',
     );
     if (!confirmed) return;
     await ref.read(preferencesProvider).clearBookmarks();
     ref.read(surahBookmarksProvider.notifier).clear();
     ref.read(duaBookmarksProvider.notifier).clear();
+    ref.read(kajianBookmarksProvider.notifier).clear();
     ref.read(lastReadSurahProvider.notifier).clear();
     if (!context.mounted) return;
     _notify(context, 'Semua bookmark telah dihapus.');
@@ -643,6 +645,7 @@ class _DataCard extends ConsumerWidget {
     final palette = context.palette;
     final surahBookmarks = ref.watch(surahBookmarksProvider);
     final duaBookmarks = ref.watch(duaBookmarksProvider);
+    final kajianBookmarks = ref.watch(kajianBookmarksProvider);
     final dhikr = ref.watch(dhikrProvider);
 
     return _SettingsCard(
@@ -664,6 +667,10 @@ class _DataCard extends ConsumerWidget {
               label: '${duaBookmarks.length} doa tersimpan',
             ),
             _CountPill(
+              icon: Icons.ondemand_video_outlined,
+              label: '${kajianBookmarks.length} kajian tersimpan',
+            ),
+            _CountPill(
               icon: Icons.spa_outlined,
               label: '${dhikr.totalCount} hitungan zikir',
             ),
@@ -672,7 +679,7 @@ class _DataCard extends ConsumerWidget {
         const SizedBox(height: 18),
         _ActionRow(
           title: 'Hapus bookmark',
-          subtitle: 'Surah, doa, dan penanda terakhir dibaca.',
+          subtitle: 'Surah, doa, kajian, dan penanda terakhir dibaca.',
           onTap: onClearBookmarks,
         ),
         const SizedBox(height: 8),

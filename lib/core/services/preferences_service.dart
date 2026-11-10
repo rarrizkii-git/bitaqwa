@@ -20,6 +20,7 @@ class PreferencesService {
   static const _madhabKey = 'bitaqwa.asr_madhab';
   static const _surahBookmarksKey = 'bitaqwa.surah_bookmarks';
   static const _duaBookmarksKey = 'bitaqwa.dua_bookmarks';
+  static const _kajianBookmarksKey = 'bitaqwa.kajian_bookmarks';
   static const _lastReadKey = 'bitaqwa.last_read';
   static const _dhikrCountsKey = 'bitaqwa.dhikr_counts';
   static const _dhikrPresetKey = 'bitaqwa.dhikr_preset';
@@ -88,6 +89,12 @@ class PreferencesService {
   Future<void> writeDuaBookmarks(Set<String> bookmarks) =>
       _prefs.setStringList(_duaBookmarksKey, bookmarks.toList(growable: false));
 
+  Set<String> readKajianBookmarks() =>
+      (_prefs.getStringList(_kajianBookmarksKey) ?? const <String>[]).toSet();
+
+  Future<void> writeKajianBookmarks(Set<String> bookmarks) =>
+      _prefs.setStringList(_kajianBookmarksKey, bookmarks.toList(growable: false));
+
   int? readLastReadSurah() => _prefs.getInt(_lastReadKey);
 
   Future<void> writeLastReadSurah(int? number) {
@@ -128,6 +135,7 @@ class PreferencesService {
   Future<void> clearBookmarks() async {
     await _prefs.remove(_surahBookmarksKey);
     await _prefs.remove(_duaBookmarksKey);
+    await _prefs.remove(_kajianBookmarksKey);
     await _prefs.remove(_lastReadKey);
   }
 

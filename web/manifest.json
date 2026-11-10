@@ -1,35 +1,83 @@
 {
-    "name": "bitaqwa",
-    "short_name": "bitaqwa",
-    "start_url": ".",
-    "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
-    "prefer_related_applications": false,
-    "icons": [
+  "name": "Bitaqwa — Teman Ibadah Harian",
+  "short_name": "Bitaqwa",
+  "description": "Jadwal shalat, Al-Qur'an, doa, zikir, dan arah kiblat dalam satu ruang yang tenang. Tanpa akun; data tersimpan di perangkat.",
+  "id": "/",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FCFAF6",
+  "theme_color": "#126B4F",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["lifestyle", "education"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icons/Icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/Icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/Icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Jadwal Shalat",
+      "short_name": "Jadwal",
+      "description": "Lihat jadwal shalat hari ini.",
+      "url": "/jadwal-shalat",
+      "icons": [
         {
-            "src": "icons/Icon-192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "icons/Icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        },
-        {
-            "src": "icons/Icon-maskable-192.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "maskable"
-        },
-        {
-            "src": "icons/Icon-maskable-512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
+          "src": "icons/Icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
-    ]
+      ]
+    },
+    {
+      "name": "Al-Qur'an",
+      "short_name": "Qur'an",
+      "description": "Baca 114 surah Al-Qur'an.",
+      "url": "/quran",
+      "icons": [
+        {
+          "src": "icons/Icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Doa & Zikir",
+      "short_name": "Doa",
+      "description": "Koleksi doa dan penghitung zikir.",
+      "url": "/doa",
+      "icons": [
+        {
+          "src": "icons/Icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
 }

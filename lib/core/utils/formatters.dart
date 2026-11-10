@@ -7,18 +7,26 @@ String formatClock(DateTime time) {
   return '$hour:$minute';
 }
 
+/// Formats a calendar date in the viewer's local time zone.
+///
+/// Source timestamps (for example YouTube's `publishedAt`) arrive as UTC after
+/// parsing. Formatting them without conversion would show the UTC calendar day,
+/// which can be a day off from what the viewer sees on the source site.
 String formatDateLong(DateTime date) {
-  final formatted = DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(date);
+  final formatted = DateFormat(
+    'EEEE, d MMMM yyyy',
+    'id_ID',
+  ).format(date.toLocal());
   return _capitalize(formatted);
 }
 
 String formatDateShort(DateTime date) {
-  final formatted = DateFormat('d MMM yyyy', 'id_ID').format(date);
+  final formatted = DateFormat('d MMM yyyy', 'id_ID').format(date.toLocal());
   return formatted;
 }
 
 String formatMonthYear(DateTime date) =>
-    DateFormat('MMMM yyyy', 'id_ID').format(date);
+    DateFormat('MMMM yyyy', 'id_ID').format(date.toLocal());
 
 String relativeDayLabel(DateTime date, DateTime today) {
   final a = DateTime(date.year, date.month, date.day);
@@ -46,6 +54,30 @@ String formatDurationMinutes(Duration duration) {
   final hours = duration.inHours;
   final rest = minutes.remainder(60);
   return rest == 0 ? '$hours jam' : '$hours jam $rest menit';
+}
+
+/// Clock-style duration for video cards: `12:04` or `1:08:32`.
+String formatVideoDuration(int totalSeconds) {
+  final duration = Duration(seconds: totalSeconds < 0 ? 0 : totalSeconds);
+  final hours = duration.inHours;
+  final minutes = duration.inMinutes.remainder(60);
+  final seconds = duration.inSeconds.remainder(60);
+  final paddedSeconds = seconds.toString().padLeft(2, '0');
+  if (hours > 0) {
+    return '$hours:${minutes.toString().padLeft(2, '0')}:$paddedSeconds';
+  }
+  return '$minutes:$paddedSeconds';
+}
+
+String formatRupiah(int amount) {
+  final formatted = NumberFormat('#,##0', 'id_ID').format(amount);
+  return 'Rp$formatted';
+}
+
+/// Formats a milligram weight as grams without trailing zeroes.
+String formatGoldGrams(int milligrams) {
+  final grams = NumberFormat('#,##0.###', 'id_ID').format(milligrams / 1000);
+  return '$grams g';
 }
 
 String formatBearing(double bearing) => '${bearing.round()}\u00b0';

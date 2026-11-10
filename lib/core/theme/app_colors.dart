@@ -17,6 +17,11 @@ abstract final class AppColors {
   static const border = Color(0xFFE7E1D4);
   static const gold = Color(0xFFB08A4F);
 
+  /// Gold that keeps WCAG AA contrast when used for small text on the light
+  /// surfaces. [gold] stays the decorative accent; this darker tone is only
+  /// for labels and metadata that must remain readable at 10-12px.
+  static const goldInk = Color(0xFF8A6A32);
+
   // Dark theme counterparts.
   static const night = Color(0xFF07130F);
   static const nightSurface = Color(0xFF0D1C16);

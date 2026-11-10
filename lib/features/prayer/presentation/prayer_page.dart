@@ -245,38 +245,44 @@ class _DateNavigator extends StatelessWidget {
                 height: 22,
                 color: palette.border,
               ),
-              InkWell(
-                onTap: onPick,
-                borderRadius: BorderRadius.circular(12),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(
-                        Icons.calendar_today_outlined,
-                        size: 15,
-                        color: palette.primary,
-                      ),
-                      const SizedBox(width: 9),
-                      Text(
-                        isToday
-                            ? 'Hari ini \u00b7 ${formatDateShort(date)}'
-                            : formatDateShort(date),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: palette.text,
+              Flexible(
+                child: InkWell(
+                  onTap: onPick,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Icon(
+                          Icons.calendar_today_outlined,
+                          size: 15,
+                          color: palette.primary,
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      Icon(
-                        Icons.expand_more_rounded,
-                        size: 16,
-                        color: palette.muted,
-                      ),
-                    ],
+                        const SizedBox(width: 9),
+                        Flexible(
+                          child: Text(
+                            isToday
+                                ? 'Hari ini \u00b7 ${formatDateShort(date)}'
+                                : formatDateShort(date),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: palette.text,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Icon(
+                          Icons.expand_more_rounded,
+                          size: 16,
+                          color: palette.muted,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

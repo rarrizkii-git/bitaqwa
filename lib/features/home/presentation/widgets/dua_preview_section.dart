@@ -74,13 +74,15 @@ class DuaPreviewSection extends ConsumerWidget {
                           ],
                         );
                       }
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Expanded(flex: 11, child: card),
-                          const SizedBox(width: 22),
-                          Expanded(flex: 7, child: side),
-                        ],
+                      return IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            Expanded(flex: 11, child: card),
+                            const SizedBox(width: 22),
+                            Expanded(flex: 7, child: side),
+                          ],
+                        ),
                       );
                     },
                   ),

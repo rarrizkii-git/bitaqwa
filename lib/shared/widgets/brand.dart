@@ -148,11 +148,13 @@ class Eyebrow extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final tone = color ?? palette.primary;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    // A Wrap keeps the eyebrow intact inside narrow cards: a Row would give the
+    // label unbounded width and overflow once the available space shrinks.
+    return Wrap(
+      spacing: 8,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: <Widget>[
         Icon(icon, size: 12, color: palette.gold),
-        const SizedBox(width: 8),
         Text(
           label.toUpperCase(),
           style: TextStyle(

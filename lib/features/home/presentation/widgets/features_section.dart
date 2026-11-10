@@ -38,65 +38,13 @@ class FeaturesSection extends StatelessWidget {
               builder: (context, constraints) {
                 final maxWidth = constraints.maxWidth;
                 const gap = 20.0;
-
-                if (maxWidth >= 1000) {
-                  final half = (maxWidth - gap) / 2;
-                  final third = (maxWidth - gap * 2) / 3;
-
-                  return Column(
-                    children: <Widget>[
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(
-                            width: half,
-                            child: StaggeredReveal(
-                              index: 0,
-                              child: _FeatureCard(
-                                feature: _features[0],
-                                index: 1,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: gap),
-                          SizedBox(
-                            width: half,
-                            child: StaggeredReveal(
-                              index: 1,
-                              child: _FeatureCard(
-                                feature: _features[1],
-                                index: 2,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: gap),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          for (int i = 2; i < 5; i++) ...<Widget>[
-                            SizedBox(
-                              width: third,
-                              child: StaggeredReveal(
-                                index: i,
-                                child: _FeatureCard(
-                                  feature: _features[i],
-                                  index: i + 1,
-                                ),
-                              ),
-                            ),
-                            if (i < 4) const SizedBox(width: gap),
-                          ],
-                        ],
-                      ),
-                    ],
-                  );
-                }
-
-                final columns = maxWidth >= 640 ? 2 : 1;
-                final cardWidth =
-                    columns == 2 ? (maxWidth - gap) / 2 : maxWidth;
+                final columns = maxWidth >= 1000
+                    ? 3
+                    : (maxWidth >= 600 ? 2 : 1);
+                final cardWidth = (maxWidth - gap * (columns - 1)) / columns;
+                // A lone final card on a two-column grid spans the full row
+                // instead of leaving an awkward hole beside it.
+                final lastCardSpansRow = columns == 2 && _features.length.isOdd;
 
                 return Wrap(
                   spacing: gap,
@@ -104,11 +52,11 @@ class FeaturesSection extends StatelessWidget {
                   children: <Widget>[
                     for (int i = 0; i < _features.length; i++)
                       SizedBox(
-                        width: i == _features.length - 1 && columns == 2
+                        width: lastCardSpansRow && i == _features.length - 1
                             ? maxWidth
                             : cardWidth,
                         child: StaggeredReveal(
-                          index: i,
+                          index: i > 8 ? 8 : i,
                           child: _FeatureCard(
                             feature: _features[i],
                             index: i + 1,
@@ -182,6 +130,14 @@ const _features = <_FeatureData>[
     icon: Icons.explore_rounded,
     route: '/kiblat',
     tag: 'Arah',
+  ),
+  _FeatureData(
+    title: 'Kajian Online',
+    description:
+        'Pustaka kajian pilihan yang ditautkan langsung ke video aslinya di YouTube, lengkap dengan pencarian, tema, dan daftar tersimpan.',
+    icon: Icons.school_rounded,
+    route: '/kajian',
+    tag: 'Ilmu',
   ),
 ];
 
@@ -258,17 +214,17 @@ class _FeatureCard extends StatelessWidget {
               Text(
                 feature.title,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontSize: 24,
-                      color: palette.text,
-                    ),
+                  fontSize: 24,
+                  color: palette.text,
+                ),
               ),
               const SizedBox(height: 9),
               Text(
                 feature.description,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: palette.muted,
-                      height: 1.65,
-                    ),
+                  color: palette.muted,
+                  height: 1.65,
+                ),
               ),
               const SizedBox(height: 18),
               Row(
@@ -311,9 +267,7 @@ class _FeatureIcon extends StatelessWidget {
       decoration: BoxDecoration(
         color: palette.primarySoft,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: palette.primary.withValues(alpha: 0.14),
-        ),
+        border: Border.all(color: palette.primary.withValues(alpha: 0.14)),
       ),
       child: Stack(
         alignment: Alignment.center,

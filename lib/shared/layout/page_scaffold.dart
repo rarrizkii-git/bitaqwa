@@ -64,10 +64,14 @@ class _PageScaffoldState extends ConsumerState<PageScaffold> {
 
   void _updateScrollState() {
     if (!mounted || !_controller.hasClients) return;
-    ref.read(navScrollProvider.notifier).update(
-          _controller.offset,
-          _controller.position.maxScrollExtent,
-        );
+    final position = _controller.position;
+    // The controller can be attached for a frame before layout has measured
+    // the scrollable's content. Reading maxScrollExtent during that window
+    // throws in Flutter's ScrollPosition implementation.
+    if (!position.hasContentDimensions) return;
+    ref
+        .read(navScrollProvider.notifier)
+        .update(_controller.offset, position.maxScrollExtent);
   }
 
   @override
@@ -222,72 +226,89 @@ class PageHeader extends StatelessWidget {
             bottom: context.responsive(mobile: 44.0, tablet: 58.0, desktop: 68.0),
           ),
           child: ContentWidth(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Expanded(
-                  flex: 8,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Eyebrow(eyebrow),
-                      const SizedBox(height: 18),
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 760),
-                        child: Text(
-                          title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall
-                              ?.copyWith(
-                                fontSize: context.responsive(
-                                  mobile: 34.0,
-                                  tablet: 44.0,
-                                  desktop: 50.0,
-                                ),
-                                height: 1.08,
-                                letterSpacing: -1.2,
-                                color: palette.text,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final copy = Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Eyebrow(eyebrow),
+                    const SizedBox(height: 18),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 760),
+                      child: Text(
+                        title,
+                        style: Theme.of(context).textTheme.displaySmall
+                            ?.copyWith(
+                              fontSize: context.responsive(
+                                mobile: 34.0,
+                                tablet: 44.0,
+                                desktop: 50.0,
                               ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 620),
-                        child: Text(
-                          description,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(color: palette.muted),
-                        ),
-                      ),
-                      if (meta != null) ...<Widget>[
-                        const SizedBox(height: 24),
-                        meta!,
-                      ],
-                    ],
-                  ),
-                ),
-                if (action != null) ...<Widget>[
-                  const SizedBox(width: 32),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: action,
-                  ),
-                ] else if (context.isDesktop)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 48, bottom: 8),
-                    child: SizedBox(
-                      width: 150,
-                      height: 150,
-                      child: RotatingStar(
-                        size: 150,
-                        opacity: context.isDarkMode ? 0.35 : 0.22,
+                              height: 1.08,
+                              letterSpacing: -1.2,
+                              color: palette.text,
+                            ),
                       ),
                     ),
-                  ),
-              ],
+                    const SizedBox(height: 16),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 620),
+                      child: Text(
+                        description,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyLarge?.copyWith(color: palette.muted),
+                      ),
+                    ),
+                    if (meta != null) ...<Widget>[
+                      const SizedBox(height: 24),
+                      meta!,
+                    ],
+                  ],
+                );
+
+                // Below this width the action used to compete with the copy for
+                // the same row, which squeezed the headline into a narrow
+                // column on phones. Stacking keeps both readable and leaves the
+                // desktop composition untouched.
+                if (constraints.maxWidth < 760) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      copy,
+                      if (action != null) ...<Widget>[
+                        const SizedBox(height: 26),
+                        action!,
+                      ],
+                    ],
+                  );
+                }
+
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(flex: 8, child: copy),
+                    if (action != null) ...<Widget>[
+                      const SizedBox(width: 32),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: action,
+                      ),
+                    ] else if (context.isDesktop)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 48, bottom: 8),
+                        child: SizedBox(
+                          width: 150,
+                          height: 150,
+                          child: RotatingStar(
+                            size: 150,
+                            opacity: context.isDarkMode ? 0.35 : 0.22,
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
             ),
           ),
         ),

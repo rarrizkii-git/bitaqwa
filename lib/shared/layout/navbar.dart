@@ -24,10 +24,16 @@ const _primaryNav = <_NavItem>[
   _NavItem('Jadwal Shalat', '/jadwal-shalat'),
   _NavItem("Al-Qur'an", '/quran'),
   _NavItem('Doa & Zikir', '/doa', aliases: <String>['/zikir']),
+  _NavItem('Kajian', '/kajian'),
+  _NavItem('Zakat', '/zakat'),
 ];
 
 class SiteNavbar extends ConsumerStatefulWidget {
-  const SiteNavbar({super.key});
+  const SiteNavbar({super.key, required this.location});
+
+  /// Current path from the router. Passed in by the shell because the navbar
+  /// lives outside the individual route builders.
+  final String location;
 
   @override
   ConsumerState<SiteNavbar> createState() => _SiteNavbarState();
@@ -69,9 +75,11 @@ class _SiteNavbarState extends ConsumerState<SiteNavbar> {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final scrollState = ref.watch(navScrollProvider);
-    final location = GoRouterState.of(context).uri.path;
+    final location = widget.location;
     final desktop = context.isDesktop;
-    final height = desktop ? AppConstants.navHeight : AppConstants.navHeightMobile;
+    final height = desktop
+        ? AppConstants.navHeight
+        : AppConstants.navHeightMobile;
     final showQuickActions = context.screenWidth >= 1180;
 
     return RepaintBoundary(
@@ -89,8 +97,13 @@ class _SiteNavbarState extends ConsumerState<SiteNavbar> {
           boxShadow: scrollState.scrolled
               ? <BoxShadow>[
                   BoxShadow(
-                    color: (context.isDarkMode ? Colors.black : palette.primaryDeep)
-                        .withValues(alpha: context.isDarkMode ? 0.24 : 0.05),
+                    color:
+                        (context.isDarkMode
+                                ? Colors.black
+                                : palette.primaryDeep)
+                            .withValues(
+                              alpha: context.isDarkMode ? 0.24 : 0.05,
+                            ),
                     blurRadius: 18,
                     offset: const Offset(0, 8),
                   ),
@@ -104,9 +117,7 @@ class _SiteNavbarState extends ConsumerState<SiteNavbar> {
                 child: desktop
                     ? Row(
                         children: <Widget>[
-                          BrandLockup(
-                            onTap: () => context.go('/'),
-                          ),
+                          BrandLockup(onTap: () => context.go('/')),
                           const SizedBox(width: 24),
                           Expanded(
                             child: Wrap(
@@ -416,10 +427,16 @@ class _MobileMenuDrawer extends ConsumerWidget {
 
     final links = <_MenuLink>[
       const _MenuLink('Beranda', '/', Icons.home_outlined),
-      const _MenuLink('Jadwal Shalat', '/jadwal-shalat', Icons.access_time_rounded),
+      const _MenuLink(
+        'Jadwal Shalat',
+        '/jadwal-shalat',
+        Icons.access_time_rounded,
+      ),
       const _MenuLink("Al-Qur'an", '/quran', Icons.menu_book_outlined),
       const _MenuLink('Doa Harian', '/doa', Icons.volunteer_activism_outlined),
       const _MenuLink('Zikir', '/zikir', Icons.spa_outlined),
+      const _MenuLink('Kajian Online', '/kajian', Icons.play_circle_outline_rounded),
+      const _MenuLink('Zakat', '/zakat', Icons.calculate_outlined),
       const _MenuLink('Arah Kiblat', '/kiblat', Icons.explore_outlined),
       const _MenuLink('Pengaturan', '/pengaturan', Icons.settings_outlined),
     ];
@@ -502,9 +519,7 @@ class _MobileMenuDrawer extends ConsumerWidget {
                                 Expanded(
                                   child: Text(
                                     'Ganti mode terang atau gelap',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
+                                    style: Theme.of(context).textTheme.bodySmall
                                         ?.copyWith(color: palette.muted),
                                   ),
                                 ),
@@ -529,9 +544,9 @@ class _MobileMenuDrawer extends ConsumerWidget {
                       Text(
                         'Tanpa akun. Preferensi dan bookmark tersimpan di perangkatmu.',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: palette.muted,
-                              height: 1.5,
-                            ),
+                          color: palette.muted,
+                          height: 1.5,
+                        ),
                       ),
                     ],
                   ),
@@ -574,46 +589,53 @@ class _DrawerLink extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Material(
-        color: active
-            ? palette.primarySoft.withValues(alpha: context.isDarkMode ? 0.6 : 1)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(14),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-            child: Row(
-              children: <Widget>[
-                Icon(
-                  link.icon,
-                  size: 19,
-                  color: active ? palette.primary : palette.muted,
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Material(
+            color: active
+                ? palette.primarySoft.withValues(
+                    alpha: context.isDarkMode ? 0.6 : 1,
+                  )
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(14),
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(14),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 14,
                 ),
-                const SizedBox(width: 13),
-                Expanded(
-                  child: Text(
-                    link.label,
-                    style: TextStyle(
-                      fontSize: 14.5,
-                      fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-                      color: active ? palette.primary : palette.text,
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      link.icon,
+                      size: 19,
+                      color: active ? palette.primary : palette.muted,
                     ),
-                  ),
+                    const SizedBox(width: 13),
+                    Expanded(
+                      child: Text(
+                        link.label,
+                        style: TextStyle(
+                          fontSize: 14.5,
+                          fontWeight: active
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                          color: active ? palette.primary : palette.text,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      size: 18,
+                      color: palette.muted,
+                    ),
+                  ],
                 ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  size: 18,
-                  color: palette.muted,
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    )
+        )
         .animate()
         .fadeIn(
           duration: 320.ms,

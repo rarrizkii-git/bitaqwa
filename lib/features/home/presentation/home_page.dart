@@ -3,7 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/app_providers.dart';
 import '../../../shared/layout/page_scaffold.dart';
+import 'widgets/dua_preview_section.dart';
 import 'widgets/features_section.dart';
+import 'widgets/hero_section.dart';
+import 'widgets/prayer_preview_section.dart';
+import 'widgets/quran_preview_section.dart';
+import 'widgets/reminder_section.dart';
+import 'widgets/stats_cta_sections.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -14,6 +20,7 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   final ScrollController _controller = ScrollController();
+  final GlobalKey _featuresKey = GlobalKey();
 
   @override
   void initState() {
@@ -29,12 +36,36 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.dispose();
   }
 
+  void _showFeatures() {
+    final target = _featuresKey.currentContext;
+    if (target == null) return;
+    Scrollable.ensureVisible(
+      target,
+      duration: const Duration(milliseconds: 750),
+      curve: Curves.easeOutCubic,
+      alignment: 0,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
       controller: _controller,
-      child: const FeaturesSection(),
+      child: Column(
+        children: <Widget>[
+          HeroSection(
+            scrollController: _controller,
+            onExplore: _showFeatures,
+          ),
+          FeaturesSection(key: _featuresKey),
+          const PrayerPreviewSection(),
+          const QuranPreviewSection(),
+          const DuaPreviewSection(),
+          const ReminderSection(),
+          const StatsSection(),
+          const CtaSection(),
+        ],
+      ),
     );
   }
 }

@@ -19,6 +19,7 @@ class BitaqwaPalette extends ThemeExtension<BitaqwaPalette> {
     required this.muted,
     required this.border,
     required this.gold,
+    required this.goldInk,
     required this.heroPanel,
     required this.heroArch,
     required this.pattern,
@@ -35,6 +36,10 @@ class BitaqwaPalette extends ThemeExtension<BitaqwaPalette> {
   final Color muted;
   final Color border;
   final Color gold;
+
+  /// Gold tone reserved for small text and metadata, where [gold] would not
+  /// reach an accessible contrast ratio on light surfaces.
+  final Color goldInk;
   final Color heroPanel;
   final Color heroArch;
   final Color pattern;
@@ -51,6 +56,7 @@ class BitaqwaPalette extends ThemeExtension<BitaqwaPalette> {
     muted: AppColors.mutedText,
     border: AppColors.border,
     gold: AppColors.gold,
+    goldInk: AppColors.goldInk,
     heroPanel: Color(0xFFF1EADB),
     heroArch: Color(0xFFFCFAF6),
     pattern: AppColors.emerald,
@@ -68,6 +74,7 @@ class BitaqwaPalette extends ThemeExtension<BitaqwaPalette> {
     muted: AppColors.nightMuted,
     border: AppColors.nightBorder,
     gold: AppColors.goldLight,
+    goldInk: AppColors.goldLight,
     heroPanel: Color(0xFF0F241C),
     heroArch: Color(0xFF0A1A14),
     pattern: Color(0xFF9FD4BC),
@@ -86,6 +93,7 @@ class BitaqwaPalette extends ThemeExtension<BitaqwaPalette> {
     Color? muted,
     Color? border,
     Color? gold,
+    Color? goldInk,
     Color? heroPanel,
     Color? heroArch,
     Color? pattern,
@@ -102,6 +110,7 @@ class BitaqwaPalette extends ThemeExtension<BitaqwaPalette> {
       muted: muted ?? this.muted,
       border: border ?? this.border,
       gold: gold ?? this.gold,
+      goldInk: goldInk ?? this.goldInk,
       heroPanel: heroPanel ?? this.heroPanel,
       heroArch: heroArch ?? this.heroArch,
       pattern: pattern ?? this.pattern,
@@ -123,6 +132,7 @@ class BitaqwaPalette extends ThemeExtension<BitaqwaPalette> {
       muted: Color.lerp(muted, other.muted, t)!,
       border: Color.lerp(border, other.border, t)!,
       gold: Color.lerp(gold, other.gold, t)!,
+      goldInk: Color.lerp(goldInk, other.goldInk, t)!,
       heroPanel: Color.lerp(heroPanel, other.heroPanel, t)!,
       heroArch: Color.lerp(heroArch, other.heroArch, t)!,
       pattern: Color.lerp(pattern, other.pattern, t)!,

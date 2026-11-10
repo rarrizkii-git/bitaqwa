@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/cities.dart';
 import '../data/dhikr_presets.dart';
+import '../data/kajian_catalog.dart';
 import '../models/city.dart';
 import '../models/dhikr.dart';
 import '../models/prayer_times.dart';
@@ -17,6 +18,12 @@ import '../utils/prayer_calculator.dart';
 final preferencesProvider = Provider<PreferencesService>((ref) {
   throw UnimplementedError('preferencesProvider must be overridden');
 });
+
+/// Curated Kajian Online content. Exposed as a provider so tests and a future
+/// CMS-backed implementation can replace it without touching the screens.
+final kajianCatalogProvider = Provider<KajianCatalog>(
+  (ref) => const KajianCatalog(),
+);
 
 // ---------------------------------------------------------------------------
 // Appearance & preferences
@@ -219,6 +226,30 @@ class DuaBookmarksNotifier extends Notifier<Set<String>> {
 final duaBookmarksProvider =
     NotifierProvider<DuaBookmarksNotifier, Set<String>>(
   DuaBookmarksNotifier.new,
+);
+
+class KajianBookmarksNotifier extends Notifier<Set<String>> {
+  @override
+  Set<String> build() => ref.read(preferencesProvider).readKajianBookmarks();
+
+  void toggle(String id) {
+    final next = <String>{...state};
+    if (!next.add(id)) next.remove(id);
+    state = Set<String>.unmodifiable(next);
+    unawaited(ref.read(preferencesProvider).writeKajianBookmarks(next));
+  }
+
+  void clear() {
+    state = const <String>{};
+    unawaited(
+      ref.read(preferencesProvider).writeKajianBookmarks(const <String>{}),
+    );
+  }
+}
+
+final kajianBookmarksProvider =
+    NotifierProvider<KajianBookmarksNotifier, Set<String>>(
+  KajianBookmarksNotifier.new,
 );
 
 class LastReadNotifier extends Notifier<int?> {

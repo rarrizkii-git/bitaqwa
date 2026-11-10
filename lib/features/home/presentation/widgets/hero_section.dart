@@ -73,36 +73,38 @@ class HeroSection extends ConsumerWidget {
             spacing: 72,
           ),
         ),
-        AnimatedBuilder(
-          animation: scrollController,
-          builder: (context, child) {
-            final offset = scrollController.hasClients ? scrollController.offset : 0.0;
-            return Transform.translate(
-              offset: Offset(0, offset * 0.12),
-              child: child,
-            );
-          },
-          child: Stack(
-            children: <Widget>[
-              Positioned(
-                left: -110,
-                top: 60,
-                child: GlowOrb(
-                  size: 360,
-                  color: palette.primary,
-                  opacity: context.isDarkMode ? 0.11 : 0.08,
+        Positioned.fill(
+          child: AnimatedBuilder(
+            animation: scrollController,
+            builder: (context, child) {
+              final offset = scrollController.hasClients ? scrollController.offset : 0.0;
+              return Transform.translate(
+                offset: Offset(0, offset * 0.12),
+                child: child,
+              );
+            },
+            child: Stack(
+              children: <Widget>[
+                Positioned(
+                  left: -110,
+                  top: 60,
+                  child: GlowOrb(
+                    size: 360,
+                    color: palette.primary,
+                    opacity: context.isDarkMode ? 0.11 : 0.08,
+                  ),
                 ),
-              ),
-              Positioned(
-                right: -100,
-                top: 120,
-                child: GlowOrb(
-                  size: 420,
-                  color: palette.gold,
-                  opacity: context.isDarkMode ? 0.06 : 0.08,
+                Positioned(
+                  right: -100,
+                  top: 120,
+                  child: GlowOrb(
+                    size: 420,
+                    color: palette.gold,
+                    opacity: context.isDarkMode ? 0.06 : 0.08,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         ContentWidth(

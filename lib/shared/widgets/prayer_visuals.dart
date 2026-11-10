@@ -119,13 +119,17 @@ class PrayerTimeRow extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text(
-                      entry.name.label,
-                      style: TextStyle(
-                        fontSize: dense ? 13 : 14,
-                        fontWeight:
-                            highlighted ? FontWeight.w700 : FontWeight.w600,
-                        color: foreground,
+                    Flexible(
+                      child: Text(
+                        entry.name.label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: dense ? 13 : 14,
+                          fontWeight:
+                              highlighted ? FontWeight.w700 : FontWeight.w600,
+                          color: foreground,
+                        ),
                       ),
                     ),
                     if (isNext) ...<Widget>[

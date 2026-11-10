@@ -13,8 +13,9 @@ class SiteFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
-    final background =
-        context.isDarkMode ? palette.surfaceAlt : palette.primaryDeep;
+    final background = context.isDarkMode
+        ? palette.surfaceAlt
+        : palette.primaryDeep;
     const foreground = Color(0xFFF4F0E6);
     const muted = Color(0xBFF4F0E6);
 
@@ -50,10 +51,7 @@ class SiteFooter extends StatelessWidget {
                       gold: palette.gold,
                     )
                   else
-                    _CompactFooter(
-                      foreground: foreground,
-                      muted: muted,
-                    ),
+                    _CompactFooter(foreground: foreground, muted: muted),
                   const SizedBox(height: 48),
                   Divider(color: foreground.withValues(alpha: 0.12)),
                   const SizedBox(height: 22),
@@ -86,11 +84,7 @@ class _DesktopFooter extends StatelessWidget {
       children: <Widget>[
         Expanded(
           flex: 3,
-          child: _BrandColumn(
-            foreground: foreground,
-            muted: muted,
-            gold: gold,
-          ),
+          child: _BrandColumn(foreground: foreground, muted: muted, gold: gold),
         ),
         const SizedBox(width: 56),
         Expanded(
@@ -108,6 +102,7 @@ class _DesktopFooter extends StatelessWidget {
                     _FooterLinkData('Jadwal Shalat', '/jadwal-shalat'),
                     _FooterLinkData("Al-Qur'an", '/quran'),
                     _FooterLinkData('Doa Harian', '/doa'),
+                    _FooterLinkData('Kajian Online', '/kajian'),
                   ],
                 ),
               ),
@@ -119,6 +114,7 @@ class _DesktopFooter extends StatelessWidget {
                   muted: muted,
                   links: const <_FooterLinkData>[
                     _FooterLinkData('Zikir', '/zikir'),
+                    _FooterLinkData('Zakat', '/zakat'),
                     _FooterLinkData('Arah Kiblat', '/kiblat'),
                     _FooterLinkData('Pengaturan', '/pengaturan'),
                   ],
@@ -133,18 +129,26 @@ class _DesktopFooter extends StatelessWidget {
                     const SizedBox(height: 18),
                     Text(
                       'Teks Al-Qur\u2019an dan terjemahan Indonesia dimuat dari Al Quran Cloud dan ditampilkan dengan atribusi.',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(color: muted, height: 1.65),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: muted,
+                        height: 1.65,
+                      ),
                     ),
                     const SizedBox(height: 14),
                     Text(
                       'Jadwal shalat dihitung secara astronomis di perangkatmu. Verifikasi dengan jadwal resmi setempat.',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(color: muted, height: 1.65),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: muted,
+                        height: 1.65,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Text(
+                      'Kajian Online menautkan setiap video ke kanal aslinya di YouTube dan tidak mengunggah ulang materi.',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: muted,
+                        height: 1.65,
+                      ),
                     ),
                   ],
                 ),
@@ -189,6 +193,7 @@ class _CompactFooter extends StatelessWidget {
                   _FooterLinkData('Jadwal Shalat', '/jadwal-shalat'),
                   _FooterLinkData("Al-Qur'an", '/quran'),
                   _FooterLinkData('Doa Harian', '/doa'),
+                  _FooterLinkData('Kajian Online', '/kajian'),
                 ],
               ),
             ),
@@ -200,6 +205,7 @@ class _CompactFooter extends StatelessWidget {
                 muted: muted,
                 links: const <_FooterLinkData>[
                   _FooterLinkData('Zikir', '/zikir'),
+                  _FooterLinkData('Zakat', '/zakat'),
                   _FooterLinkData('Kiblat', '/kiblat'),
                   _FooterLinkData('Pengaturan', '/pengaturan'),
                 ],
@@ -214,10 +220,9 @@ class _CompactFooter extends StatelessWidget {
                   const SizedBox(height: 16),
                   Text(
                     'Tanpa akun. Preferensi dan bookmark tersimpan di perangkatmu. Jadwal shalat adalah perkiraan astronomis.',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: muted, height: 1.65),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: muted, height: 1.65),
                   ),
                 ],
               ),
@@ -286,10 +291,9 @@ class _BrandColumn extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 330),
           child: Text(
             'Ruang tenang untuk jadwal shalat, Al-Qur\u2019an, doa, zikir, dan arah kiblat. Dirancang agar ibadah harian terasa lebih dekat.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: muted,
-                  height: 1.7,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: muted, height: 1.7),
           ),
         ),
         const SizedBox(height: 22),
@@ -384,11 +388,11 @@ class _FooterLinkState extends State<_FooterLink> {
           child: Text(
             widget.data.label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: _hovered ? widget.foreground : widget.muted,
-                  height: 1.4,
-                  decoration: _hovered ? TextDecoration.underline : null,
-                  decorationColor: widget.foreground.withValues(alpha: 0.4),
-                ),
+              color: _hovered ? widget.foreground : widget.muted,
+              height: 1.4,
+              decoration: _hovered ? TextDecoration.underline : null,
+              decorationColor: widget.foreground.withValues(alpha: 0.4),
+            ),
           ),
         ),
       ),
@@ -407,17 +411,15 @@ class _FooterBottom extends StatelessWidget {
     final year = DateTime.now().year;
     final left = Text(
       '\u00a9 $year Bitaqwa. Dibuat dengan niat baik.',
-      style: Theme.of(context)
-          .textTheme
-          .bodySmall
-          ?.copyWith(color: muted, height: 1.5),
+      style: Theme.of(
+        context,
+      ).textTheme.bodySmall?.copyWith(color: muted, height: 1.5),
     );
     final right = Text(
       'Flutter Web \u00b7 Material 3',
-      style: Theme.of(context)
-          .textTheme
-          .bodySmall
-          ?.copyWith(color: muted, height: 1.5),
+      style: Theme.of(
+        context,
+      ).textTheme.bodySmall?.copyWith(color: muted, height: 1.5),
     );
 
     if (context.isMobile) {

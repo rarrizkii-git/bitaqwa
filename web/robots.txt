@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Bitaqwa is a single-page Flutter Web application.
+# Add a sitemap here once the production domain is known.
