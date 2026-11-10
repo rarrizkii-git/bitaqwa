@@ -16,14 +16,18 @@
           or production). Intended for the Phase 2A preview gate and
           Phase 2E.
 
-    Semantics replicated from @vercel/routing-utils getTransformedRoutes():
-      1. Trailing-slash normalization: non-root paths ending in "/" are
-         308-redirected to the slash-free path (Vercel default).
+    Semantics replicated from @vercel/routing-utils getTransformedRoutes()
+    and confirmed empirically against the live platform:
+      1. No trailing-slash normalization: with `trailingSlash` undefined,
+         Vercel routes "/quran/" as-is (no 308); SPA routes with a
+         trailing slash get the shell, asset directories 404.
       2. Filesystem first: existing files are always served; rewrites never
          shadow them (`handle: filesystem` precedes rewrite routes).
       3. Rewrites match the request path only, anchored as ^<source>$
          (case-sensitive); query strings are preserved and ignored by
          route matching.
+    Static content types mirror what Vercel actually serves
+    (.js -> application/javascript, .json -> application/json, .otf -> font/otf).
 
     The rewrite pattern under test is read from vercel.json so this script
     always verifies exactly what will be deployed.
@@ -43,7 +47,13 @@ param(
     [switch]$Local,
 
     # Build output to serve in -Local mode. Defaults to <repo>/build/web.
-    [string]$WebRoot = ''
+    [string]$WebRoot = '',
+
+    # Optional Vercel "Protection Bypass for Automation" secret
+    # (Project Settings > Domains > Deployment Protection). Sent as the
+    # x-vercel-protection-bypass header so the matrix can run against
+    # preview deployments using Standard Protection.
+    [string]$ProtectionBypass = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -106,14 +116,14 @@ $Matrix = @(
 
     # -- existing static files (must be served, never rewritten) ----------
     @{ Path = '/index.html';                         Expect = 'File'; Type = 'text/html' }        # shell itself, served from filesystem
-    @{ Path = '/main.dart.js';                       Expect = 'File'; Type = 'text/javascript' }
-    @{ Path = '/flutter.js';                         Expect = 'File'; Type = 'text/javascript' }
-    @{ Path = '/flutter_bootstrap.js';              Expect = 'File'; Type = 'text/javascript' }
-    @{ Path = '/flutter_service_worker.js';         Expect = 'File'; Type = 'text/javascript' }
-    @{ Path = '/canvaskit/canvaskit.js';            Expect = 'File'; Type = 'text/javascript' }
+    @{ Path = '/main.dart.js';                       Expect = 'File'; Type = 'application/javascript' }
+    @{ Path = '/flutter.js';                         Expect = 'File'; Type = 'application/javascript' }
+    @{ Path = '/flutter_bootstrap.js';              Expect = 'File'; Type = 'application/javascript' }
+    @{ Path = '/flutter_service_worker.js';         Expect = 'File'; Type = 'application/javascript' }
+    @{ Path = '/canvaskit/canvaskit.js';            Expect = 'File'; Type = 'application/javascript' }
     @{ Path = '/canvaskit/canvaskit.wasm';          Expect = 'File'; Type = 'application/wasm' }
     @{ Path = '/canvaskit/chromium/canvaskit.wasm';  Expect = 'File'; Type = 'application/wasm' }
-    @{ Path = '/canvaskit/skwasm.js';                Expect = 'File'; Type = 'text/javascript' }
+    @{ Path = '/canvaskit/skwasm.js';                Expect = 'File'; Type = 'application/javascript' }
     @{ Path = '/assets/FontManifest.json';           Expect = 'File'; Type = 'application/json' }
     @{ Path = '/assets/AssetManifest.bin';          Expect = 'File'; Type = 'application/octet-stream' }
     @{ Path = '/assets/AssetManifest.bin.json';      Expect = 'File'; Type = 'application/json' }
@@ -137,12 +147,12 @@ $Matrix = @(
     @{ Path = '/nope.js';                            Expect = 'NotFound' }
     @{ Path = '/missing/deep/path.html';             Expect = 'NotFound' }
 
-    # -- trailing-slash normalization --------------------------------------
-    @{ Path = '/quran/';                             Expect = 'Redirect'; Location = '/quran' }
-    @{ Path = '/kajian/ustadz/khalid-basalamah/';   Expect = 'Redirect'; Location = '/kajian/ustadz/khalid-basalamah' }
-    @{ Path = '/icons/';                             Expect = 'Redirect'; Location = '/icons' }
-    @{ Path = '/canvaskit/';                         Expect = 'Redirect'; Location = '/canvaskit' }
-    @{ Path = '/assets/';                            Expect = 'Redirect'; Location = '/assets' }
+    # -- trailing-slash URLs (Vercel does NOT normalize by default) --------
+    @{ Path = '/quran/';                             Expect = 'Html' }
+    @{ Path = '/kajian/ustadz/khalid-basalamah/';   Expect = 'Html' }
+    @{ Path = '/icons/';                             Expect = 'NotFound' }
+    @{ Path = '/canvaskit/';                         Expect = 'NotFound' }
+    @{ Path = '/assets/';                            Expect = 'NotFound' }
 )
 
 # ---------------------------------------------------------------------------
@@ -204,8 +214,8 @@ $ServerScript = {
 
     $contentTypes = @{
         '.html'    = 'text/html; charset=utf-8'
-        '.js'      = 'text/javascript; charset=utf-8'
-        '.mjs'     = 'text/javascript; charset=utf-8'
+        '.js'      = 'application/javascript; charset=utf-8'
+        '.mjs'     = 'application/javascript; charset=utf-8'
         '.json'    = 'application/json; charset=utf-8'
         '.map'     = 'application/json; charset=utf-8'
         '.png'     = 'image/png'
@@ -242,15 +252,7 @@ $ServerScript = {
                     break :loop
                 }
 
-                # 1. Trailing-slash normalization (Vercel default, non-root).
-                if ($path.Length -gt 1 -and $path.EndsWith('/')) {
-                    $response.StatusCode = 308
-                    $response.RedirectLocation = $path.TrimEnd('/')
-                    $response.Close()
-                    continue :loop
-                }
-
-                # 2. Filesystem first.
+                # 1. Filesystem first.
                 $file = $null
                 if ($path -eq '/') {
                     $file = $IndexHtml
@@ -272,7 +274,7 @@ $ServerScript = {
                     continue :loop
                 }
 
-                # 3. Rewrite (path-only, anchored, case-sensitive).
+                # 2. Rewrite (path-only, anchored, case-sensitive).
                 if ($route.IsMatch($path)) {
                     $bytes = [System.IO.File]::ReadAllBytes($IndexHtml)
                     $response.StatusCode = 200
@@ -283,7 +285,7 @@ $ServerScript = {
                     continue :loop
                 }
 
-                # 4. Not found.
+                # 3. Not found.
                 $response.StatusCode = 404
                 $response.Close()
             }
@@ -311,6 +313,9 @@ function Invoke-Matrix {
     $handler.AllowAutoRedirect = $false
     $client = [System.Net.Http.HttpClient]::new($handler)
     $client.Timeout = [TimeSpan]::FromSeconds(30)
+    if ($script:ProtectionBypassSecret) {
+        $client.DefaultRequestHeaders.Add('x-vercel-protection-bypass', $script:ProtectionBypassSecret)
+    }
 
     $results = New-Object System.Collections.Generic.List[object]
     try {
@@ -390,6 +395,11 @@ if (-not $Local -and -not $BaseUrl) {
 }
 if ($Local -and $BaseUrl) {
     throw "Use either -Local or -BaseUrl, not both."
+}
+
+if ($ProtectionBypass) {
+    $script:ProtectionBypassSecret = $ProtectionBypass
+    Write-Host "Sending x-vercel-protection-bypass header (Protection Bypass for Automation)."
 }
 
 $allResults = New-Object System.Collections.Generic.List[object]
