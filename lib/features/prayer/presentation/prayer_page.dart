@@ -357,7 +357,8 @@ class _PrayerSchedulePanel extends ConsumerWidget {
     }
 
     final active = isToday ? schedule.activePrayerAt(now) : null;
-    final countdown = next.time.difference(now);
+    final nextPrayer = next;
+    final countdown = nextPrayer.time.difference(now);
 
     return Container(
       decoration: BoxDecoration(
@@ -473,66 +474,106 @@ class _PrayerSchedulePanel extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Expanded(
-                        child: Column(
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final name = Text(
+                        nextPrayer.name.label,
+                        style: const TextStyle(
+                          fontFamily: 'Fraunces',
+                          fontSize: 34,
+                          height: 1,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: -0.6,
+                          color: Colors.white,
+                        ),
+                      );
+                      final timeLabel = Text(
+                        '${formatClock(nextPrayer.time)} \u00b7 ${nextPrayer.name.arabic}',
+                        textDirection: TextDirection.ltr,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white.withValues(alpha: 0.75),
+                        ),
+                      );
+                      final countdownBlock = Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            formatCountdown(countdown),
+                            style: const TextStyle(
+                              fontFamily: 'Fraunces',
+                              fontSize: 26,
+                              height: 1,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.3,
+                              color: Color(0xFFE8D4A8),
+                              fontFeatures: <FontFeature>[
+                                FontFeature.tabularFigures(),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            countdown.isNegative ? 'segera' : 'lagi',
+                            style: TextStyle(
+                              fontSize: 9.5,
+                              letterSpacing: 1,
+                              color: Colors.white.withValues(alpha: 0.58),
+                            ),
+                          ),
+                        ],
+                      );
+
+                      if (!isToday) {
+                        return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(
-                              next.name.label,
-                              style: const TextStyle(
-                                fontFamily: 'Fraunces',
-                                fontSize: 34,
-                                height: 1,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: -0.6,
-                                color: Colors.white,
-                              ),
-                            ),
+                            name,
                             const SizedBox(height: 5),
-                            Text(
-                              '${formatClock(next.time)} \u00b7 ${next.name.arabic}',
-                              textDirection: TextDirection.ltr,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.white.withValues(alpha: 0.75),
-                              ),
-                            ),
+                            timeLabel,
                           ],
-                        ),
-                      ),
-                      if (isToday)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                        );
+                      }
+
+                      // Below ~230 px the countdown leaves too little room for
+                      // the prayer name, which would then break mid-word
+                      // (e.g. "Subu" / "h"). Give the name the full width and
+                      // keep the countdown beside the time instead.
+                      if (constraints.maxWidth < 230) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
-                            Text(
-                              formatCountdown(countdown),
-                              style: const TextStyle(
-                                fontFamily: 'Fraunces',
-                                fontSize: 26,
-                                height: 1,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.3,
-                                color: Color(0xFFE8D4A8),
-                                fontFeatures: <FontFeature>[
-                                  FontFeature.tabularFigures(),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              countdown.isNegative ? 'segera' : 'lagi',
-                              style: TextStyle(
-                                fontSize: 9.5,
-                                letterSpacing: 1,
-                                color: Colors.white.withValues(alpha: 0.58),
-                              ),
+                            name,
+                            const SizedBox(height: 5),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Expanded(child: timeLabel),
+                                const SizedBox(width: 8),
+                                countdownBlock,
+                              ],
                             ),
                           ],
-                        ),
-                    ],
+                        );
+                      }
+
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                name,
+                                const SizedBox(height: 5),
+                                timeLabel,
+                              ],
+                            ),
+                          ),
+                          countdownBlock,
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),

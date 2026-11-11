@@ -39,6 +39,36 @@
       "purpose": "maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "screenshots/beranda-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Beranda Bitaqwa: jadwal shalat berikutnya, arah kiblat, dan pintasan fitur"
+    },
+    {
+      "src": "screenshots/jadwal-shalat-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Jadwal shalat lima waktu dengan hitung mundur shalat berikutnya"
+    },
+    {
+      "src": "screenshots/quran-narrow.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Pembaca Al-Qur'an: teks Arab, transliterasi Latin, dan terjemahan"
+    },
+    {
+      "src": "screenshots/jadwal-shalat-narrow.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Jadwal shalat di ponsel dengan penanda shalat berikutnya"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Jadwal Shalat",

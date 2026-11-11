@@ -11,6 +11,8 @@ import '../../features/kajian/presentation/kajian_saved_page.dart';
 import '../../features/kajian/presentation/kajian_ustadz_directory_page.dart';
 import '../../features/kajian/presentation/kajian_ustadz_page.dart';
 import '../../features/prayer/presentation/prayer_page.dart';
+import '../../features/pwa/presentation/offline_pill.dart';
+import '../../features/pwa/presentation/update_banner.dart';
 import '../../features/qibla/presentation/qibla_page.dart';
 import '../../features/quran/presentation/quran_page.dart';
 import '../../features/quran/presentation/surah_detail_page.dart';
@@ -34,10 +36,38 @@ class _SiteShell extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         bottom: false,
-        child: Column(
+        child: Stack(
           children: <Widget>[
-            SiteNavbar(location: location),
-            Expanded(child: child),
+            Positioned.fill(
+              child: Column(
+                children: <Widget>[
+                  SiteNavbar(location: location),
+                  Expanded(
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned.fill(child: child),
+                        // Connectivity floats over the page content, below the
+                        // navigation, so it never shifts what is being read.
+                        const Positioned(
+                          left: 0,
+                          right: 0,
+                          top: 0,
+                          child: OfflinePill(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // The update notice floats over the shell instead of taking layout
+            // space, so it can never shift the page or the navigation.
+            const Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: UpdateBanner(),
+            ),
           ],
         ),
       ),

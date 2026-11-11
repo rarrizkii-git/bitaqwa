@@ -14,6 +14,8 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/brand.dart';
 import '../../../shared/widgets/city_picker.dart';
 import '../../../shared/widgets/reveal.dart';
+import '../../../shared/widgets/settings_card.dart';
+import '../../pwa/presentation/install_card.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -39,10 +41,7 @@ class SettingsPage extends ConsumerWidget {
               spacing: 10,
               runSpacing: 10,
               children: <Widget>[
-                SoftBadge(
-                  label: city.label,
-                  icon: Icons.location_on_outlined,
-                ),
+                SoftBadge(label: city.label, icon: Icons.location_on_outlined),
                 SoftBadge(
                   label: method.label,
                   icon: Icons.tune_rounded,
@@ -91,13 +90,19 @@ class SettingsPage extends ConsumerWidget {
                   final prayer = Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
+                      // The card owns its bottom gap, so a hidden card (already
+                      // installed, or dismissed this session) leaves no hole.
                       Reveal(
-                        delay: const Duration(milliseconds: 50),
+                        delay: const Duration(milliseconds: 40),
+                        child: const InstallCard(),
+                      ),
+                      Reveal(
+                        delay: const Duration(milliseconds: 90),
                         child: const _LocationCard(),
                       ),
                       const SizedBox(height: 18),
                       Reveal(
-                        delay: const Duration(milliseconds: 100),
+                        delay: const Duration(milliseconds: 140),
                         child: const _AboutCard(),
                       ),
                     ],
@@ -197,7 +202,7 @@ class _AppearanceCard extends ConsumerWidget {
     final reduceMotion = ref.watch(reduceMotionProvider);
     final arabicScale = ref.watch(arabicScaleProvider);
 
-    return _SettingsCard(
+    return SettingsCard(
       icon: Icons.palette_outlined,
       title: 'Tampilan',
       description: 'Bitaqwa mengikuti tema sistem, atau pilih sendiri.',
@@ -257,9 +262,7 @@ class _AppearanceCard extends ConsumerWidget {
               alpha: context.isDarkMode ? 0.4 : 0.55,
             ),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: palette.primary.withValues(alpha: 0.12),
-            ),
+            border: Border.all(color: palette.primary.withValues(alpha: 0.12)),
           ),
           child: Column(
             children: <Widget>[
@@ -337,10 +340,11 @@ class _ThemeSelector extends StatelessWidget {
                       boxShadow: value == option.$1
                           ? <BoxShadow>[
                               BoxShadow(
-                                color: (context.isDarkMode
-                                        ? Colors.black
-                                        : palette.primaryDeep)
-                                    .withValues(alpha: 0.08),
+                                color:
+                                    (context.isDarkMode
+                                            ? Colors.black
+                                            : palette.primaryDeep)
+                                        .withValues(alpha: 0.08),
                                 blurRadius: 8,
                                 offset: const Offset(0, 3),
                               ),
@@ -396,7 +400,7 @@ class _ReaderCard extends ConsumerWidget {
     final showLatin = ref.watch(showLatinProvider);
     final lastRead = ref.watch(lastReadSurahProvider);
 
-    return _SettingsCard(
+    return SettingsCard(
       icon: Icons.menu_book_outlined,
       title: 'Pengalaman membaca',
       description: 'Preferensi ini dipakai di pembaca Al-Qur\u2019an.',
@@ -442,10 +446,7 @@ class _ReaderCard extends ConsumerWidget {
                       lastRead == null
                           ? 'Belum ada bacaan terakhir'
                           : 'Terakhir dibaca',
-                      style: TextStyle(
-                        fontSize: 10.5,
-                        color: palette.muted,
-                      ),
+                      style: TextStyle(fontSize: 10.5, color: palette.muted),
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -487,7 +488,7 @@ class _LocationCard extends ConsumerWidget {
     final method = ref.watch(calculationMethodProvider);
     final madhab = ref.watch(asrMadhabProvider);
 
-    return _SettingsCard(
+    return SettingsCard(
       icon: Icons.my_location_rounded,
       title: 'Lokasi & perhitungan',
       description:
@@ -517,10 +518,7 @@ class _LocationCard extends ConsumerWidget {
                         const SizedBox(height: 2),
                         Text(
                           '${city.label} \u00b7 ${city.timezoneLabel}',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: palette.muted,
-                          ),
+                          style: TextStyle(fontSize: 11, color: palette.muted),
                         ),
                       ],
                     ),
@@ -648,7 +646,7 @@ class _DataCard extends ConsumerWidget {
     final kajianBookmarks = ref.watch(kajianBookmarksProvider);
     final dhikr = ref.watch(dhikrProvider);
 
-    return _SettingsCard(
+    return SettingsCard(
       icon: Icons.lock_outline_rounded,
       title: 'Data & privasi',
       description:
@@ -701,11 +699,7 @@ class _DataCard extends ConsumerWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Icon(
-              Icons.shield_outlined,
-              size: 14,
-              color: palette.muted,
-            ),
+            Icon(Icons.shield_outlined, size: 14, color: palette.muted),
             const SizedBox(width: 7),
             Expanded(
               child: Text(
@@ -731,7 +725,7 @@ class _AboutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
-    return _SettingsCard(
+    return SettingsCard(
       icon: Icons.info_outline_rounded,
       title: 'Tentang Bitaqwa',
       description: AppConstants.description,
@@ -742,10 +736,7 @@ class _AboutCard extends StatelessWidget {
         const SizedBox(height: 10),
         _InfoRow(label: 'Teks Al-Qur\u2019an', value: AppConstants.quranSource),
         const SizedBox(height: 10),
-        _InfoRow(
-          label: 'Terjemahan',
-          value: AppConstants.quranTranslation,
-        ),
+        _InfoRow(label: 'Terjemahan', value: AppConstants.quranTranslation),
         const SizedBox(height: 16),
         Container(
           padding: const EdgeInsets.all(14),
@@ -817,77 +808,6 @@ class _AboutCard extends StatelessWidget {
   }
 }
 
-class _SettingsCard extends StatelessWidget {
-  const _SettingsCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.children,
-  });
-
-  final IconData icon;
-  final String title;
-  final String description;
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = context.palette;
-    return Container(
-      padding: const EdgeInsets.all(22),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: palette.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: palette.primarySoft.withValues(
-                    alpha: context.isDarkMode ? 0.55 : 1,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(icon, size: 19, color: palette.primary),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      description,
-                      style: TextStyle(
-                        fontSize: 11,
-                        height: 1.5,
-                        color: palette.muted,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 18),
-          ...children,
-        ],
-      ),
-    );
-  }
-}
-
 class _SwitchRow extends StatelessWidget {
   const _SwitchRow({
     required this.title,
@@ -932,10 +852,7 @@ class _SwitchRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        Switch(
-          value: value,
-          onChanged: onChanged,
-        ),
+        Switch(value: value, onChanged: onChanged),
       ],
     );
   }
@@ -989,11 +906,7 @@ class _RadioRow extends StatelessWidget {
                       ),
                     ),
                     child: selected
-                        ? const Icon(
-                            Icons.check,
-                            size: 10,
-                            color: Colors.white,
-                          )
+                        ? const Icon(Icons.check, size: 10, color: Colors.white)
                         : null,
                   ),
                 ),
@@ -1006,8 +919,9 @@ class _RadioRow extends StatelessWidget {
                         title,
                         style: TextStyle(
                           fontSize: 12.5,
-                          fontWeight:
-                              selected ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight: selected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                           color: selected ? palette.primary : palette.text,
                         ),
                       ),
