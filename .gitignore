@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Playwright MCP browser-testing runtime output (page snapshots, console logs)
+.playwright-mcp/
