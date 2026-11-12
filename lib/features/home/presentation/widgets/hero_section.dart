@@ -58,7 +58,9 @@ class HeroSection extends ConsumerWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: <Color>[
-                  palette.surfaceAlt.withValues(alpha: context.isDarkMode ? 0.55 : 0.65),
+                  palette.surfaceAlt.withValues(
+                    alpha: context.isDarkMode ? 0.55 : 0.65,
+                  ),
                   palette.background,
                 ],
                 stops: const <double>[0, 0.86],
@@ -77,7 +79,9 @@ class HeroSection extends ConsumerWidget {
           child: AnimatedBuilder(
             animation: scrollController,
             builder: (context, child) {
-              final offset = scrollController.hasClients ? scrollController.offset : 0.0;
+              final offset = scrollController.hasClients
+                  ? scrollController.offset
+                  : 0.0;
               return Transform.translate(
                 offset: Offset(0, offset * 0.12),
                 child: child,
@@ -110,8 +114,16 @@ class HeroSection extends ConsumerWidget {
         ContentWidth(
           child: Padding(
             padding: EdgeInsets.only(
-              top: context.responsive(mobile: 42.0, tablet: 56.0, desktop: 76.0),
-              bottom: context.responsive(mobile: 56.0, tablet: 72.0, desktop: 92.0),
+              top: context.responsive(
+                mobile: 42.0,
+                tablet: 56.0,
+                desktop: 76.0,
+              ),
+              bottom: context.responsive(
+                mobile: 56.0,
+                tablet: 72.0,
+                desktop: 92.0,
+              ),
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -167,11 +179,11 @@ class _HeroCopy extends StatelessWidget {
     );
 
     final baseStyle = Theme.of(context).textTheme.displayLarge?.copyWith(
-          fontSize: fontSize,
-          height: 1.04,
-          letterSpacing: fontSize > 50 ? -2.2 : -1.3,
-          color: palette.text,
-        );
+      fontSize: fontSize,
+      height: 1.04,
+      letterSpacing: fontSize > 50 ? -2.2 : -1.3,
+      color: palette.text,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,10 +193,7 @@ class _HeroCopy extends StatelessWidget {
             children: <Widget>[
               const GoldRule(width: 28),
               const SizedBox(width: 12),
-              Eyebrow(
-                'Assalamu\u2019alaikum',
-                icon: Icons.auto_awesome,
-              ),
+              Eyebrow('Assalamu\u2019alaikum', icon: Icons.auto_awesome),
             ],
           ),
           80,
@@ -194,7 +203,10 @@ class _HeroCopy extends StatelessWidget {
           Text.rich(
             TextSpan(
               children: <InlineSpan>[
-                TextSpan(text: 'Lebih Dekat\ndengan Allah,\n', style: baseStyle),
+                TextSpan(
+                  text: 'Lebih Dekat\ndengan Allah,\n',
+                  style: baseStyle,
+                ),
                 TextSpan(
                   text: 'Setiap Hari.',
                   style: baseStyle?.copyWith(
@@ -214,10 +226,10 @@ class _HeroCopy extends StatelessWidget {
             child: Text(
               'Temani perjalanan ibadahmu dengan jadwal shalat, Al-Qur\u2019an, doa harian, dan zikir dalam satu tempat.',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: palette.muted,
-                    fontSize: 16.5,
-                    height: 1.75,
-                  ),
+                color: palette.muted,
+                fontSize: 16.5,
+                height: 1.75,
+              ),
             ),
           ),
           250,
@@ -250,8 +262,14 @@ class _HeroCopy extends StatelessWidget {
             runSpacing: 10,
             children: const <Widget>[
               _HeroPoint(icon: Icons.person_off_outlined, label: 'Tanpa akun'),
-              _HeroPoint(icon: Icons.lock_outline_rounded, label: 'Data di perangkat'),
-              _HeroPoint(icon: Icons.menu_book_outlined, label: 'Sumber tertera'),
+              _HeroPoint(
+                icon: Icons.lock_outline_rounded,
+                label: 'Data di perangkat',
+              ),
+              _HeroPoint(
+                icon: Icons.menu_book_outlined,
+                label: 'Sumber tertera',
+              ),
             ],
           ),
           430,
@@ -323,8 +341,13 @@ class HeroArtwork extends ConsumerWidget {
                     ),
                     boxShadow: <BoxShadow>[
                       BoxShadow(
-                        color: (context.isDarkMode ? Colors.black : palette.primaryDeep)
-                            .withValues(alpha: context.isDarkMode ? 0.28 : 0.10),
+                        color:
+                            (context.isDarkMode
+                                    ? Colors.black
+                                    : palette.primaryDeep)
+                                .withValues(
+                                  alpha: context.isDarkMode ? 0.28 : 0.10,
+                                ),
                         blurRadius: 46,
                         offset: const Offset(0, 26),
                       ),
@@ -378,7 +401,7 @@ class HeroArtwork extends ConsumerWidget {
                           ),
                         ),
                         Positioned(
-                          top: mobile ? 26 : 34,
+                          top: mobile ? 120 : 34,
                           left: 0,
                           right: 0,
                           child: Column(
@@ -445,10 +468,7 @@ class HeroArtwork extends ConsumerWidget {
                 top: mobile ? 62 : 78,
                 child: Floating(
                   offset: mobile ? 6 : 9,
-                  child: _NextPrayerCard(
-                    compact: mobile,
-                    cityName: city.name,
-                  ),
+                  child: _NextPrayerCard(compact: mobile, cityName: city.name),
                 ),
               ),
               Positioned(
@@ -457,10 +477,7 @@ class HeroArtwork extends ConsumerWidget {
                 child: Floating(
                   offset: 8,
                   duration: const Duration(milliseconds: 5000),
-                  child: _QiblaCard(
-                    compact: mobile,
-                    bearing: bearing,
-                  ),
+                  child: _QiblaCard(compact: mobile, bearing: bearing),
                 ),
               ),
             ],
@@ -518,10 +535,7 @@ class _NextPrayerCardState extends ConsumerState<_NextPrayerCard> {
         madhab: madhab,
         date: _now.add(const Duration(days: 1)),
       );
-      next = PrayerScheduleEntry(
-        name: PrayerName.fajr,
-        time: nextDay.fajr,
-      );
+      next = PrayerScheduleEntry(name: PrayerName.fajr, time: nextDay.fajr);
       tomorrow = true;
     }
 
@@ -590,7 +604,9 @@ class _NextPrayerCardState extends ConsumerState<_NextPrayerCard> {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      tomorrow ? 'besok \u00b7 ${widget.cityName}' : widget.cityName,
+                      tomorrow
+                          ? 'besok \u00b7 ${widget.cityName}'
+                          : widget.cityName,
                       style: TextStyle(
                         fontSize: widget.compact ? 9.5 : 10.5,
                         color: palette.muted,
@@ -620,10 +636,7 @@ class _NextPrayerCardState extends ConsumerState<_NextPrayerCard> {
 }
 
 class _QiblaCard extends StatelessWidget {
-  const _QiblaCard({
-    required this.compact,
-    required this.bearing,
-  });
+  const _QiblaCard({required this.compact, required this.bearing});
 
   final bool compact;
   final double bearing;
